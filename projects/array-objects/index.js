@@ -30,20 +30,17 @@ function forEach(array, fn) {
  Пример:
    map([1, 2, 3], (el) => el ** 2) // [1, 4, 9]
  */
-
-const array = [1, 3, 5, 7];
 function map(array, fn) {
   const newArray = [];
-
   for (let i = 0; i < array.length; i++) {
-    const currentValue = array[i];
-    const newValue = fn(currentValue);
-    newArray.push(newValue);
+    newArray.push(fn(array[i], i, array));
   }
 
   return newArray;
 }
 
+const a = map([1, 2, 3], (el) => el ** 2);
+console.log(a);
 /*
  Задание 3:
 
@@ -54,17 +51,20 @@ function map(array, fn) {
    reduce([1, 2, 3], (all, current) => all + current) // 6
  */
 function reduce(array, fn, initial) {
-  let result = initial;
+  let index;
 
-  for (let i = 0; i < array.length; i++) {
-    const currentValue = array[i];
-    result = fn(result, currentValue);
+  if (initial !== undefined) {
+    index = 0;
+  } else {
+    initial = array[0];
+    index = 1;
   }
 
-  return result;
+  for (index; index < array.length; index++) {
+    initial = fn(initial, array[index], index, array);
+  }
+  return initial;
 }
-const reduceFn = reduce(array, (acc, item) => acc + item, 0);
-console.log(reduceFn);
 
 /*
  Задание 4:
@@ -94,6 +94,14 @@ function upperProps(obj) {
    obj.foo = 2;
    console.log(obj.foo); // 4
  */
-function createProxy(obj) {}
+function createProxy(obj) {
+  return new Proxy(obj, {
+    set(obj, key, value) {
+      // obj = {} key = foo value = 2
+      obj[key] = value ** 2;
+      return true;
+    },
+  });
+}
 
 export { forEach, map, reduce, upperProps, createProxy };
