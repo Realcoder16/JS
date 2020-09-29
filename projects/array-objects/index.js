@@ -39,8 +39,6 @@ function map(array, fn) {
   return newArray;
 }
 
-const a = map([1, 2, 3], (el) => el ** 2);
-console.log(a);
 /*
  Задание 3:
 
