@@ -222,7 +222,27 @@ function collectDOMStat(root) {
      nodes: [div]
    }
  */
-function observeChildNodes(where, fn) {}
+function observeChildNodes(where, fn) {
+  const observer = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      // проверим новые узлы
+
+      if (mutation.type === 'childList') {
+        fn({
+          type: mutation.addedNodes.length ? 'insert' : 'remove',
+          nodes: [
+            ...(mutation.addedNodes.length ? mutation.addedNodes : mutation.removedNodes),
+          ],
+        });
+      }
+    }
+  });
+
+  observer.observe(where, {
+    childList: true, // наблюдать за непосредственными детьми
+    subtree: true, // и более глубокими потомками
+  });
+}
 
 export {
   createDivWithText,
