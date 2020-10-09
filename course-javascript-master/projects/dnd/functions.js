@@ -94,21 +94,17 @@ function delegate(target, fn) {
    once(document.querySelector('button'), () => console.log('обработчик выполнился!')) // добавит такой обработчик кликов для указанного элемента, который вызовется только один раз и затем удалится
  */
 function once(target, fn) {
+  let k = false;
 
-  target.addEventListener('click', function (e) {
-
-    fn();
-
+  target.addEventListener('click', () => {
+    if (!k) {
+      fn();
+      k = true;
+    }
   });
-
-    once (target, function (e) {
-
-    e.target.removeEventListener('click');
-  });
-
-  
-
 }
+
+
 
 
 
