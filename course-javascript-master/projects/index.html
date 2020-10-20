@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maps</title>
+
+  <script src='https://api-maps.yandex.ru/2.1/?apikey=5a4c2cfe-31f1-4007-af4e-11db22b6954b&lang=ru_RU' ;
+    type="text/javascript">
+    </script>
+  <style>
+    html,
+    body,
+    #map {
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+
+    .wrapper {
+      position: relative;
+    }
+
+    .review-list {
+      background: #ff8663;
+    }
+
+    .modal {
+      position: absolute;
+      display: none;
+      top: 50%;
+      left: 50%;
+      background-color: white;
+    }
+
+    .form {
+      width: 300px;
+    }
+
+    .form .field {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    .form .field input,
+    .form .field textarea {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .form .field textarea {
+      resize: none;
+    }
+
+    .form .form-error {
+      color: red;
+    }
+
+    .form .review-list {
+      max-height: 500px;
+      overflow: scroll;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <div id="map" style="width: 100vw; height: 100vh"></div>
+
+
+
+    <div class="modal">
+      <div class="review-list" data-role=review-list></div>
+      <div class="review-item"></div>
+      <div class="form" data-role="review-form">
+        <h3>Ваш отзыв</h3>
+        <div class="field">
+          <input class="review-name" data-role="review-name" type="text" placeholder="Укажите ваше имя">
+        </div>
+        <div class="field">
+          <input class="review-place" data-role="review-place" type="text" placeholder="Укажите место">
+        </div>
+        <div class="field">
+          <textarea class="review-text" data-role="review-text" placeholder="Оставьте отзыв" rows="5"></textarea>
+        </div>
+
+        <button class="review-add" data-role="review-add">Добавить</button>
+        <span class="form-error"></span>
+      </div>
+    </div>
+
+  </div>
+
+
+
+
+  <script src="./map.js"></script>
+  <script src="https://yandex.st/jquery/2.2.3/jquery.min.js" type="text/javascript"></script>
+
+</body>
+
+</html>
