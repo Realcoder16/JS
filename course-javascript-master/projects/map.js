@@ -5,6 +5,21 @@ ymaps.ready(init);
 
 function init() {
 
+
+
+
+  this.clusterer = new ymaps.Clusterer({
+    groupByCoordinates: true,
+    clusterDisableClickZoom: true,
+    clusterOpenBalloonOnClick: false,
+  });
+  this.clusterer.events.add('click', (event) => {
+
+    createInnerHTML(event);
+    openModal(event);
+
+  });
+
   // Создание карты.
   this.myMap = new ymaps.Map("map", {
 
@@ -15,33 +30,28 @@ function init() {
   });
 
 
-
-  this.clusterer = new ymaps.Clusterer({
-    groupByCoordinates: true,
-    clusterDisableClickZoom: true,
-    clusterOpenBalloonOnClick: false,
-  });
-  this.clusterer.events.add('click', (event) => {
-    openModal(event)
-  });
-
-
   this.myMap.geoObjects.add(this.clusterer);
 
   addListeners(myMap);
+
+  buildReviews();
 
 }
 
 
 
+
+
 function addListeners(myMap) {
   myMap.events.add("click", (event) => openModal(event));
+
 }
 
 function openModal(event) {
 
 
   openEmtyModal(event);
+
 }
 
 async function openEmtyModal(event) {
@@ -82,6 +92,7 @@ function getClickCoords(coords) {
 document.body.addEventListener('click', this.onDocumentClick.bind(this));
 
 async function onDocumentClick(e) {
+  document.querySelector('.review-item').innerHTML = '';
   if (e.target.dataset.role === 'review-add') {
     const reviewForm = document.querySelector('[data-role=review-form]');
     const coords = JSON.parse(reviewForm.dataset.coords);
@@ -94,66 +105,116 @@ async function onDocumentClick(e) {
       },
     };
 
-
     try {
+      var coord = coords.toString();
       var serialObj = JSON.stringify(data); //сериализуем его
+      localStorage.setItem(coord, serialObj); //запишем его в хранилище по ключу "coord"
+      let returnObj = JSON.parse(localStorage.getItem(coord));
+      console.log(returnObj)
+      const div = document.createElement('div');
+      div.classList.add('review-items');
+      div.innerHTML = `
+    <div>
+  <b>${returnObj.review.name}</b> ${returnObj.review.place}
+      </div>
+      <div>${returnObj.review.text}</div>
+`;
+      document.querySelector('.review-item').appendChild(div);
+    
+    
+    createPlacemark(coords);
 
-      localStorage.setItem("coords", serialObj); //запишем его в хранилище по ключу "myKey"
+  } catch (e) {
+    const formError = document.querySelector('.form-error');
+    formError.innerText = e.message;
+  }
+}
+}
 
-      var returnObj = JSON.parse(localStorage.getItem("coords")) //спарсим его обратно объект
-
-      const reviewItem = document.querySelector('.review-item');
 
 
-      for (i=0; i<returnObj.length; i++) {
+function createPlacemark(a) {
+
+  const placemark = new ymaps.Placemark(a);
+
+  placemark.events.add('click', (event) => {
+
+    this.openModal(event);
+
+  });
+
+  this.clusterer.add(placemark);
+}
+
+function closeModal() {
+
+  $(".modal").css("display", "none");
+
+}
+
+
+
+
+
+async function createInnerHTML(event) {
+  document.querySelector('.review-item').innerHTML = '';
+  const reviewForm = document.querySelector('[data-role=review-form]');
+  let coords = JSON.parse(reviewForm.dataset.coords);
+
+  try {
+
+    for (let i = 0; i < localStorage.length; i++) {
+      var key = localStorage.key(i);
+      var split = key.split(',');
+
+      var float = split.map(function (item) {
+        return parseFloat(item);
+      });
+
+      if (JSON.stringify(float) === JSON.stringify(coords)) {
+        let returnObj = JSON.parse(localStorage.getItem(coord));
+        console.log(returnObj)
         const div = document.createElement('div');
         div.classList.add('review-items');
         div.innerHTML = `
-<div>
-  <b>${item.name}</b> [${item.place}]
-</div>
-<div>${item.text}</div>
-`;
-        reviewItem.appendChild(div);
+          <div>
+        <b>${returnObj.review.name}</b> ${returnObj.review.place}
+            </div>
+            <div>${returnObj.review.text}</div>
+    `;
+        document.querySelector('.review-item').appendChild(div);
       }
-
-      createPlacemark();
-
-    } catch (e) {
-      const formError = document.querySelector('.form-error');
-      formError.innerText = e.message;
     }
+
+  } catch (event) {
+    const formError = document.querySelector('.form-error');
+    formError.innerText = event.message;
+  }
+
+
+
+}
+
+function buildReviews() {
+
+  for (let i = 0; i < localStorage.length; i++) {
+    var key = localStorage.key(i);
+    var split = key.split(',');
+
+    var float = split.map(function (item) {
+      return parseFloat(item);
+    });
+
+    createPlacemark(float);
+
   }
 }
 
 
 
-function createPlacemark() {
+document.querySelector('.review-remove').addEventListener("click", (event) => {
+
+  localStorage.clear();
+})
 
 
-  var placemark = new ymaps.Placemark(coords, {
-
-  }, {
-    // Опции.
-    // Необходимо указать данный тип макета.
-    iconLayout: 'default#imageWithContent',
-    // Своё изображение иконки метки.
-    iconImageHref: './img/orangemark.png',
-    // Размеры метки.
-    iconImageSize: [48, 48],
-    // Смещение левого верхнего угла иконки относительно
-    // её "ножки" (точки привязки).
-    iconImageOffset: [-24, -24],
-    // Смещение слоя с содержимым относительно слоя с картинкой.
-    iconContentOffset: [15, 15],
-    // Макет содержимого.
-
-  });
-
-  placemark.events.add('click', (event) => {
-    this.openModal(event);
-  });
-
-  this.clusterer.add(placemark);
-
-}
