@@ -160,7 +160,7 @@ async function createInnerHTML(event) {
   document.querySelector('.review-item').innerHTML = '';
   const reviewForm = document.querySelector('[data-role=review-form]');
   let coords = JSON.parse(reviewForm.dataset.coords);
-
+let coord = coords.toString();
   try {
 
     for (let i = 0; i < localStorage.length; i++) {
