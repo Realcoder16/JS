@@ -7,7 +7,6 @@ function init() {
 
 
 
-
   this.clusterer = new ymaps.Clusterer({
     groupByCoordinates: true,
     clusterDisableClickZoom: true,
@@ -15,7 +14,6 @@ function init() {
   });
   this.clusterer.events.add('click', (event) => {
 
-    createInnerHTML(event);
     openModal(event);
 
   });
@@ -34,7 +32,7 @@ function init() {
 
   addListeners(myMap);
 
-  buildReviews();
+  buildPlacemark();
 
 }
 
@@ -123,6 +121,7 @@ async function onDocumentClick(e) {
     
     
     createPlacemark(coords);
+    closeModal();
 
   } catch (e) {
     const formError = document.querySelector('.form-error');
@@ -138,8 +137,9 @@ function createPlacemark(a) {
   const placemark = new ymaps.Placemark(a);
 
   placemark.events.add('click', (event) => {
-
-    this.openModal(event);
+    debugger
+ var coords = placemark.geometry.getCoordinates();
+ this.createInnerHTML(event);
 
   });
 
@@ -155,12 +155,12 @@ function closeModal() {
 
 
 
-
 async function createInnerHTML(event) {
+  
   document.querySelector('.review-item').innerHTML = '';
-  const reviewForm = document.querySelector('[data-role=review-form]');
-  let coords = JSON.parse(reviewForm.dataset.coords);
-let coord = coords.toString();
+ 
+
+let coord = this.coords.toString();
   try {
 
     for (let i = 0; i < localStorage.length; i++) {
@@ -171,7 +171,7 @@ let coord = coords.toString();
         return parseFloat(item);
       });
 
-      if (JSON.stringify(float) === JSON.stringify(coords)) {
+      if (JSON.stringify(float) === JSON.stringify(this.coords)) {
         let returnObj = JSON.parse(localStorage.getItem(coord));
         console.log(returnObj)
         const div = document.createElement('div');
@@ -195,7 +195,7 @@ let coord = coords.toString();
 
 }
 
-function buildReviews() {
+function buildPlacemark() {
 
   for (let i = 0; i < localStorage.length; i++) {
     var key = localStorage.key(i);
@@ -214,7 +214,7 @@ function buildReviews() {
 
 document.querySelector('.review-remove').addEventListener("click", (event) => {
 
-  localStorage.clear();
+  localStorage.clear(event);
 })
 
 
