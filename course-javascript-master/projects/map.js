@@ -92,7 +92,18 @@ async function onDocumentClick(e) {
   if (e.target.dataset.role === 'review-add') {
 
     const reviewForm = document.querySelector('[data-role=review-form]');
-    const coords = JSON.parse(reviewForm.dataset.coords);
+    debugger
+   
+    if (typeof this.placemarkCoords !== 'undefined') {
+      if (coords !== this.placemarkCoords) {
+        console.log(this.placemarkCoords)
+        coords = this.placemarkCoords;
+      }
+    }
+    else {
+       coords = JSON.parse(reviewForm.dataset.coords);
+    }
+ 
     const data = {
       coords,
       review: {
@@ -103,6 +114,8 @@ async function onDocumentClick(e) {
     };
 
     try {
+      
+     
       var coord = coords.toString();
       var serialObj = JSON.stringify(data); //сериализуем его
       localStorage.setItem(coord, serialObj); //запишем его в хранилище по ключу "coord"
@@ -141,7 +154,7 @@ function createPlacemark(a) {
 
   this.placemark.events.add('click', async function (event) {
 
-
+debugger
     this.placemarkCoords = await placemark.geometry.getCoordinates();
     createInnerHTML(placemarkCoords);
 
@@ -151,7 +164,7 @@ function createPlacemark(a) {
 
 
 
-  this.clusterer.add(placemark);
+  this.clusterer.add(this.placemark);
  
 
 
@@ -170,8 +183,8 @@ function closeModal() {
 
 
 async function createInnerHTML(coords) {
-  document.querySelector('.review-item').innerHTML = '';
   debugger
+  document.querySelector('.review-item').innerHTML = '';
 
   let coord = coords.toString();
   try {
@@ -233,3 +246,15 @@ document.querySelector('.review-remove').addEventListener("click", (event) => {
 
 
 
+function addTodo (key, value) {
+  let list = []
+
+  try { 
+    list = JSON.parse(localStorage.getItem(key))
+  } catch (e) {
+    console.error(e)
+  }
+
+  list.push(value)
+  localStorage.setItem(key, JSON.stringify(list))
+}
