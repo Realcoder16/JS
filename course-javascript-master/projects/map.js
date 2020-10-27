@@ -31,7 +31,7 @@ function init() {
   this.myMap.geoObjects.add(this.clusterer);
 
   addListeners(myMap);
-
+  buildPlacemark();
 
 }
 
@@ -92,7 +92,7 @@ async function onDocumentClick(e) {
   if (e.target.dataset.role === 'review-add') {
 
     const reviewForm = document.querySelector('[data-role=review-form]');
-    debugger
+  
    
     if (typeof this.placemarkCoords !== 'undefined') {
       if (coords !== this.placemarkCoords) {
@@ -153,8 +153,8 @@ function createPlacemark(a) {
 
 
   this.placemark.events.add('click', async function (event) {
-
 debugger
+
     this.placemarkCoords = await placemark.geometry.getCoordinates();
     createInnerHTML(placemarkCoords);
 
@@ -183,7 +183,7 @@ function closeModal() {
 
 
 async function createInnerHTML(coords) {
-  debugger
+  
   document.querySelector('.review-item').innerHTML = '';
 
   let coord = coords.toString();
@@ -246,15 +246,3 @@ document.querySelector('.review-remove').addEventListener("click", (event) => {
 
 
 
-function addTodo (key, value) {
-  let list = []
-
-  try { 
-    list = JSON.parse(localStorage.getItem(key))
-  } catch (e) {
-    console.error(e)
-  }
-
-  list.push(value)
-  localStorage.setItem(key, JSON.stringify(list))
-}
