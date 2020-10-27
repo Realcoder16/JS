@@ -90,39 +90,50 @@ document.body.addEventListener('click', this.onDocumentClick.bind(this));
 
 async function onDocumentClick(e) {
   if (e.target.dataset.role === 'review-add') {
-
+debugger;
     const reviewForm = document.querySelector('[data-role=review-form]');
   
-   
+
     if (typeof this.placemarkCoords !== 'undefined') {
       if (coords !== this.placemarkCoords) {
-        console.log(this.placemarkCoords)
-        coords = this.placemarkCoords;
+         coords = this.placemarkCoords;
+         let data = {
+          coords,
+          review: {
+            name: document.querySelector('[data-role=review-name]').value,
+            place: document.querySelector('[data-role=review-place]').value,
+            text: document.querySelector('[data-role=review-text]').value,
+          },
+        };
+        var coord = coords.toString();
+        var serialObj = JSON.stringify(data);
+         localStorage.setItem(coord, localStorage.getItem(coord) + serialObj);
+         let returnObj = JSON.parse(localStorage.getItem(coord));
+         console.log(returnObj)
       }
     }
     else {
        coords = JSON.parse(reviewForm.dataset.coords);
-    }
- 
-    const data = {
-      coords,
-      review: {
-        name: document.querySelector('[data-role=review-name]').value,
-        place: document.querySelector('[data-role=review-place]').value,
-        text: document.querySelector('[data-role=review-text]').value,
-      },
-    };
-
-    try {
-      
-     
-      var coord = coords.toString();
+       let data = {
+        coords,
+        review: {
+          name: document.querySelector('[data-role=review-name]').value,
+          place: document.querySelector('[data-role=review-place]').value,
+          text: document.querySelector('[data-role=review-text]').value,
+        },
+      };
+       var coord = coords.toString();
       var serialObj = JSON.stringify(data); //сериализуем его
       localStorage.setItem(coord, serialObj); //запишем его в хранилище по ключу "coord"
       let returnObj = JSON.parse(localStorage.getItem(coord));
       console.log(returnObj)
      
+    }
+ 
+    
 
+    try {
+      
       createPlacemark(coords);
       closeModal();
 
@@ -137,7 +148,7 @@ async function onDocumentClick(e) {
 
 
 function createPlacemark(a) {
-  debugger
+  
   if (typeof this.placemarkCoords !== 'undefined') {
     if (a !== this.placemarkCoords) {
       console.log(this.placemarkCoords)
@@ -145,15 +156,12 @@ function createPlacemark(a) {
       this.placemark = new ymaps.Placemark(a);  
     }
   } else {
-
     this.placemark = new ymaps.Placemark(a);
     console.log(this.placemarkCoords)
-
   }
 
 
   this.placemark.events.add('click', async function (event) {
-debugger
 
     this.placemarkCoords = await placemark.geometry.getCoordinates();
     createInnerHTML(placemarkCoords);
