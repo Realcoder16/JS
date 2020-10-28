@@ -88,16 +88,17 @@ function getClickCoords(coords) {
 
 document.body.addEventListener('click', this.onDocumentClick.bind(this));
 
-async function onDocumentClick(e) {
+function onDocumentClick(e) {
   if (e.target.dataset.role === 'review-add') {
-debugger;
+    debugger;
     const reviewForm = document.querySelector('[data-role=review-form]');
-  
+
 
     if (typeof this.placemarkCoords !== 'undefined') {
       if (coords !== this.placemarkCoords) {
-         coords = this.placemarkCoords;
-         let data = {
+        coords = this.placemarkCoords;
+        let coord = coords.toString();
+        let data = {
           coords,
           review: {
             name: document.querySelector('[data-role=review-name]').value,
@@ -105,16 +106,13 @@ debugger;
             text: document.querySelector('[data-role=review-text]').value,
           },
         };
-        var coord = coords.toString();
-        var serialObj = JSON.stringify(data);
-         localStorage.setItem(coord, localStorage.getItem(coord) + serialObj);
-         let returnObj = JSON.parse(localStorage.getItem(coord));
-         console.log(returnObj)
+
+        this.addTodo(coord, data);
       }
     }
     else {
-       coords = JSON.parse(reviewForm.dataset.coords);
-       let data = {
+      coords = JSON.parse(reviewForm.dataset.coords);
+      let data = {
         coords,
         review: {
           name: document.querySelector('[data-role=review-name]').value,
@@ -122,18 +120,18 @@ debugger;
           text: document.querySelector('[data-role=review-text]').value,
         },
       };
-       var coord = coords.toString();
+      var coord = coords.toString();
       var serialObj = JSON.stringify(data); //сериализуем его
       localStorage.setItem(coord, serialObj); //запишем его в хранилище по ключу "coord"
-      let returnObj = JSON.parse(localStorage.getItem(coord));
+      var returnObj = JSON.parse(localStorage.getItem(coord));
       console.log(returnObj)
-     
+
     }
- 
-    
+
+
 
     try {
-      
+
       createPlacemark(coords);
       closeModal();
 
@@ -147,13 +145,14 @@ debugger;
 
 
 
+
 function createPlacemark(a) {
-  
+
   if (typeof this.placemarkCoords !== 'undefined') {
     if (a !== this.placemarkCoords) {
       console.log(this.placemarkCoords)
       a = this.placemarkCoords;
-      this.placemark = new ymaps.Placemark(a);  
+      this.placemark = new ymaps.Placemark(a);
     }
   } else {
     this.placemark = new ymaps.Placemark(a);
@@ -161,19 +160,19 @@ function createPlacemark(a) {
   }
 
 
-  this.placemark.events.add('click', async function (event) {
+  this.placemark.events.add('click',  function (event) {
 
-    this.placemarkCoords = await placemark.geometry.getCoordinates();
+    var placemarkCoords =  placemark.geometry.getCoordinates();
     createInnerHTML(placemarkCoords);
 
-    
+
 
   });
 
 
 
   this.clusterer.add(this.placemark);
- 
+
 
 
 }
@@ -190,8 +189,8 @@ function closeModal() {
 
 
 
-async function createInnerHTML(coords) {
-  
+function createInnerHTML(coords) {
+  debugger
   document.querySelector('.review-item').innerHTML = '';
 
   let coord = coords.toString();
@@ -206,17 +205,19 @@ async function createInnerHTML(coords) {
       });
 
       if (JSON.stringify(float) === JSON.stringify(coords)) {
-        let returnObj = JSON.parse(localStorage.getItem(coord));
-        console.log(returnObj.review.name)
-        const div = document.createElement('div');
-        div.classList.add('review-items');
-        div.innerHTML = `
+        var returnObj = JSON.parse(localStorage.getItem(coord));
+        console.log(returnObj);
+        for (const item in returnObj) {
+          const div = document.createElement('div');
+          div.classList.add('review-items');
+          div.innerHTML = `
           <div>
-        <b>${returnObj.review.name}</b> ${returnObj.review.place}
+        <b>${returnObj.review.name}</b> ${review.place}
             </div>
-            <div>${returnObj.review.text}</div>
+            <div>${review.text}</div>
     `;
-        document.querySelector('.review-item').appendChild(div);
+          document.querySelector('.review-item').appendChild(div);
+        }
       }
     }
 
@@ -254,3 +255,16 @@ document.querySelector('.review-remove').addEventListener("click", (event) => {
 
 
 
+function addTodo(key, value) {
+
+
+  try {
+    var list = [JSON.parse(localStorage.getItem(key))]
+  } catch (e) {
+    console.error(e)
+  }
+
+  list.push(value);
+  localStorage.setItem(key, JSON.stringify(list));
+
+}
