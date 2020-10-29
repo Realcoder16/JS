@@ -1,0 +1,32 @@
+{
+  "users": [
+    {
+      "id": "80c50520-13c6-11eb-92a3-4bf68a934a5a",
+      "userName": "test"
+    },
+    {
+      "id": "c60068a0-13c6-11eb-8a6f-a949402cb2a5",
+      "userName": "Login"
+    },
+    {
+      "id": "db1a7a50-13c6-11eb-8bb2-839c7ace7a2f",
+      "userName": "VAsya"
+    },
+    {
+      "id": "b33815e0-18fa-11eb-bb7d-01118a3ea7e4",
+      "userName": "dfdfdfd"
+    },
+    {
+      "id": "bba1f560-1900-11eb-a18e-a3b70bd35735",
+      "userName": "Login"
+    },
+    {
+      "id": "c5d0c520-1900-11eb-90bc-214aa6c4ca89",
+      "userName": "Vasya"
+    },
+    {
+      "id": "2f527c20-1913-11eb-8da0-59e42bc3e169",
+      "userName": "Petya"
+    }
+  ]
+}

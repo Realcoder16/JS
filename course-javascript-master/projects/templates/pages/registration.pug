@@ -1,0 +1,16 @@
+.login(data-page="registration")
+    .login__form
+        .auth-form.auth-form--register
+            .auth-form__header
+                h2.auth-form__title Регистрация
+                .auth-form__desc Введите пожалуйста своё имя, логин и пароль для регистрации
+            .auth-form__form
+                form.form(data-action="registration")
+                    .form__fields
+                        input(type="text" name="name"  placeholder="Введите своё имя" required).input.input--bordered.form__input
+                        input(type="text" name="login"  placeholder="Введите свой логин" required).input.input--bordered.form__input
+                        input(type="password" name="password" placeholder="Введите свой пароль" required).input.input--bordered.form__input
+                    button(type="submit").button.form__send-btn Зарегистрироваться
+            .auth-form__info
+                .auth-form__info-text Есть уккаунт ?
+                a(href="./#login").auth-form__link Войти
