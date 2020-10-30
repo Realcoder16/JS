@@ -206,15 +206,16 @@ function createInnerHTML(coords) {
 
       if (JSON.stringify(float) === JSON.stringify(coords)) {
         var returnObj = JSON.parse(localStorage.getItem(coord));
-        console.log(returnObj);
-        for (const item in returnObj) {
+        console.log(returnObj); 
+        
+        for (var item in returnObj.review) {
           const div = document.createElement('div');
           div.classList.add('review-items');
           div.innerHTML = `
           <div>
-        <b>${returnObj.review.name}</b> ${review.place}
+        <b>${returnObj.review[name]}</b> ${returnObj.review[place]}
             </div>
-            <div>${review.text}</div>
+            <div>${returnObj.review[text]}</div>
     `;
           document.querySelector('.review-item').appendChild(div);
         }
