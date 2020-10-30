@@ -94,33 +94,30 @@ function onDocumentClick(e) {
     const reviewForm = document.querySelector('[data-role=review-form]');
 
 
-    if (typeof placemarkCoords !== 'undefined') {
-      if (coords !== placemarkCoords) {
-        coords = placemarkCoords;
-        console.log(coords)
-        console.log(placemarkCoords)
+    if (typeof this.placemarkCoords !== 'undefined') {
+      if (coords !== this.placemarkCoords) {
+        coords = this.placemarkCoords;
         let coord = coords.toString();
-
         let data = {
-            name: document.querySelector('[data-role=review-name]').value,
+                     name: document.querySelector('[data-role=review-name]').value,
             place: document.querySelector('[data-role=review-place]').value,
             text: document.querySelector('[data-role=review-text]').value,
+          };
         
-        };
 
-  
-
+        this.addTodo(coord, data);
       }
     }
     else {
       coords = JSON.parse(reviewForm.dataset.coords);
       let data = {
-         
-        name: document.querySelector('[data-role=review-name]').value,
-        place: document.querySelector('[data-role=review-place]').value,
-        text: document.querySelector('[data-role=review-text]').value,
-        };
-
+        coords,
+        review: {
+          name: document.querySelector('[data-role=review-name]').value,
+          place: document.querySelector('[data-role=review-place]').value,
+          text: document.querySelector('[data-role=review-text]').value,
+        },
+      };
       var coord = coords.toString();
       var serialObj = JSON.stringify(data); //сериализуем его
       localStorage.setItem(coord, serialObj); //запишем его в хранилище по ключу "coord"
@@ -164,7 +161,7 @@ function createPlacemark(a) {
   this.placemark.events.add('click',  function (event) {
 
     this.placemarkCoords =  placemark.geometry.getCoordinates();
-    createInnerHTML(this.placemarkCoords);
+    createInnerHTML(placemarkCoords); 
 
 
 
@@ -191,8 +188,9 @@ function closeModal() {
 
 
 function createInnerHTML(coords) {
+  debugger
   document.querySelector('.review-item').innerHTML = '';
-debugger
+
   let coord = coords.toString();
   try {
 
@@ -208,17 +206,17 @@ debugger
         var returnObj = JSON.parse(localStorage.getItem(coord));
         console.log(returnObj);
         
-    
+        for (var item in returnObj.review) {
           const div = document.createElement('div');
           div.classList.add('review-items');
           div.innerHTML = `
           <div>
-        <b>${returnObj.name}</b> ${returnObj.place}
+        <b>${returnObj.review[name]}</b> ${returnObj.review[place]}
             </div>
-            <div>${returnObj.text}</div>
+            <div>${returnObj.review[text]}</div>
     `;
           document.querySelector('.review-item').appendChild(div);
-        
+        }
       }
     }
 
@@ -255,5 +253,18 @@ document.querySelector('.review-remove').addEventListener("click", (event) => {
 
 
 
-//  
 
+function addTodo(key, value) {
+
+let list = [];
+
+  try {
+    list = JSON.parse(localStorage.getItem(key))
+  } catch (e) {
+    console.error(e)
+  }
+
+  list.push(value);
+  localStorage.setItem(key, JSON.stringify(list));
+
+}
